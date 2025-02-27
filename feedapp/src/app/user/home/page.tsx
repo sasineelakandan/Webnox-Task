@@ -222,7 +222,7 @@ const Home: React.FC = () => {
         <div className="container mx-auto px-4 py-2 flex justify-between items-center">
           <div className="text-2xl font-bold text-blue-600">FeedIn</div>
           <div className="flex space-x-4">
-           <h1> {user?.username}</h1>
+           
             <button onClick={handleLogout} className="bg-blue-600 text-white px-4 py-2 rounded-full">logout</button>
           </div>
         </div>

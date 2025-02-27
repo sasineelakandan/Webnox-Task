@@ -19,7 +19,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   console.log(req)
 
-  // Allow unprotected or public routes without requiring authentication
+ 
   if ([...UNPROTECTED_ROUTES].some(route => pathname.startsWith(route)) || pathname === "/") {
     console.log(`Allowing access to public route: ${pathname}`);
     return NextResponse.next();
@@ -54,7 +54,7 @@ export async function middleware(req: NextRequest) {
 
 async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role: string | null }> {
   
-  const token = req.cookies.get(tokenName);  // Get token from cookies
+  const token = req.cookies.get(tokenName);  
   console.log(req.cookies);
   console.log(token?.value, '------------------------------------------');
   
