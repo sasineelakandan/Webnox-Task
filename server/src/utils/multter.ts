@@ -2,31 +2,28 @@ import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
-// Define an interface for the params object
 interface CloudinaryParams {
-  folder: string; // Folder name in Cloudinary
-  allowed_formats: string[]; // Allowed formats for the upload
-  transformation: { width: number; height: number; crop: string }[]; // Transformations to apply (e.g., resizing)
+  folder: string; 
+  allowed_formats: string[];
+  transformation: { width: number; height: number; crop: string }[];
 }
 
-// Configure Cloudinary
+
 cloudinary.config({
-  cloud_name:'dzlxjwwfm',
-  api_key:'367464676432915',
-  api_secret:'HGbSOc1NhSiXuySTQUPATOvnerY'
+  cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:process.env.CLOUDINARY_API_KEY,
+  api_secret:process.env.CLOUDINARY_API_SECRET
 });
 
-// Configure Multer with Cloudinary Storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'profile_pics', // This is valid for Cloudinary
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp',], // Optional: Restrict formats
-    transformation: [{ width: 500, height: 500, crop: 'limit' }] // Optional: Resize images
-  } as CloudinaryParams // Type assertion using the CloudinaryParams interface
+    folder: 'profile_pics',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp',], 
+    transformation: [{ width: 500, height: 500, crop: 'limit' }] 
+  } as CloudinaryParams 
 });
 
-// Initialize Multer
 const upload = multer({ storage });
 
 export default upload;

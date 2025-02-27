@@ -41,7 +41,7 @@ const Home: React.FC = () => {
   const [isOpen1, setIsOpen1] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [currentPostId, setCurrentPostId] = useState<string | null>(null);
-  const [filteredPosts, setFilteredPosts] = React.useState<Post[]>([]);
+  const [commentuser, setCommentuser] = React.useState<Post[]>([]);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -154,6 +154,7 @@ const Home: React.FC = () => {
   const handleComment = async (postId: string, commentText: string) => {
     try {
       const response=await addCommentApi({postId,commentText})
+      console.log(response.data)
       const updatedPosts = posts.map((post) =>
         post._id === postId
           ? {
@@ -221,11 +222,7 @@ const Home: React.FC = () => {
         <div className="container mx-auto px-4 py-2 flex justify-between items-center">
           <div className="text-2xl font-bold text-blue-600">FeedIn</div>
           <div className="flex space-x-4">
-            <input
-              type="text"
-              placeholder="Search"
-              className="px-4 py-2 border rounded-full focus:outline-none"
-            />
+           <h1> {user?.username}</h1>
             <button onClick={handleLogout} className="bg-blue-600 text-white px-4 py-2 rounded-full">logout</button>
           </div>
         </div>
@@ -400,7 +397,7 @@ const Home: React.FC = () => {
                     className="w-10 h-10 rounded-full"
                   />
                   <div>
-                    <div className="font-semibold">{user?.username}</div>
+                    <div className="font-semibold">{post?.userId?.username}</div>
                     <div className="text-sm text-gray-500">
                       {new Date(post.createdAt).toLocaleString()}
                     </div>
@@ -491,21 +488,25 @@ const Home: React.FC = () => {
                 )}
 
     {/* Comments Section */}
-    <div className="mt-4 space-y-2">
-      {post?.comments?.map((comment:any, index:any) => (
-        <div key={index} className="flex items-center space-x-2">
-          <img
-            src={profilePic || user?.profilePic || "https://via.placeholder.com/150"}
-            alt="User Profile"
-            className="w-6 h-6 rounded-full"
-          />
-          <div>
-            <div className="font-semibold">{comment?.userId?.username}</div>
-            <div className="text-sm text-gray-600">{comment?.text}</div>
-          </div>
-        </div>
-      ))}
+    <div
+  className={`${
+    post?.comments?.length > 3 ? "max-h-48 overflow-y-auto" : ""
+  }`}
+>
+  {post?.comments?.map((comment: any, index: any) => (
+    <div key={index} className="flex items-center space-x-2">
+      <img
+        src={profilePic || user?.profilePic || "https://via.placeholder.com/150"}
+        alt="User Profile"
+        className="w-6 h-6 rounded-full"
+      />
+      <div>
+        <div className="font-semibold">{comment?.userId?.username}</div>
+        <div className="text-sm text-gray-600">{comment?.text}</div>
+      </div>
     </div>
+  ))}
+</div>
   </div>
 ))}
 </div>

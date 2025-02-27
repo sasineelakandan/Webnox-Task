@@ -10,6 +10,7 @@ import {
 import Post from "../models/Post";
 import User from "../models/User";
 import { ObjectId } from "mongodb";
+import mongoose from 'mongoose';
 export class UserRepository implements IUserRepository {
   addUser = async (userData: AddUserInput): Promise<AddUserOuput> => {
     try {
@@ -113,7 +114,7 @@ updateProfilePic=async(userId: string, profilePic: string): Promise<SuccessRespo
         message: 'Slot assigned successfully',
       };
     } catch (error: any) {
-      console.error("Error in slot creation:", error);
+      console.error("Error in updateProfile:", error);
       throw new Error(error.message);
     }
   }
@@ -158,7 +159,7 @@ updateProfilePic=async(userId: string, profilePic: string): Promise<SuccessRespo
     try {
       const post = await Post.findById(postId);
       if (!post) throw new Error("Post not found");
-      const objectId = new ObjectId(userId)
+      const objectId = new mongoose.Types.ObjectId(userId);
       const likeIndex = post.likes.indexOf(objectId);
   
       if (likeIndex === -1) {
@@ -190,28 +191,30 @@ addComment=async(userId: string, data: any): Promise<any>=> {
       if (!data.commentText) {
         throw new Error("Comment text cannot be empty.");
       }
-  
+      const userIdObject = new mongoose.Types.ObjectId(userId);
       const newComment = {
-        userId: new ObjectId(userId),
+        userId:userIdObject,
         text: data.commentText,
         createdAt: new Date(),
       };
-  console.log(data.postId)
+  
       
       const updatedPost = await Post.findByIdAndUpdate(
         data.postId,
         { $push: { comments: newComment } },
         { new: true }
       ).populate({
-        path: "comments.userId",
-        select: "username profilePic", 
+        path: "comments.userId", 
+        select: "username profilePic",
       });
-  
-      if (!updatedPost) {
+
+     const user=await User.findOne({_id:userId})
+     const mergedPost = { ...updatedPost, ...user };
+      if (!mergedPost) {
         throw new Error("Post not found.");
       }
-  
-      return updatedPost;
+      console.log(mergedPost)
+      return mergedPost;
     } catch (error: any) {
       console.error("Error in addComment:", error);
       throw new Error(error.message);
