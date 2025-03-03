@@ -449,7 +449,7 @@ const Home: React.FC = () => {
                     }}
                   >
                     <MessageCircle size={20} />
-                    <span>Comments</span>
+                    <span>AddComment</span>
                   </button>
                   <button
                     className="flex items-center space-x-2 text-gray-600 hover:text-blue-500"
@@ -459,7 +459,7 @@ const Home: React.FC = () => {
                     }}
                   >
                     <MessageCircle size={20} />
-                    <span>  All Comments</span>
+                    <span>All Comments</span>
                   </button>
                 </div>
                 {isOpen1 && currentPostId === post._id && (
