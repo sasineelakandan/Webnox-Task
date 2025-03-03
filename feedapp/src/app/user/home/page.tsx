@@ -2,7 +2,7 @@
 import { ToastContainer, toast } from "react-toastify";
 import React, { useState, useEffect } from "react";
 import { Camera, Heart, MessageCircle, Send } from "lucide-react";
-import { addCommentApi, getpostApi, likeApi, postApi, profileApi, profilepicApi } from "@/Service/userApi/page";
+import { addCommentApi, getCommentApi, getpostApi, likeApi, postApi, profileApi, profilepicApi } from "@/Service/userApi/page";
 import Swal from "sweetalert2";
 import Img from '../../../../public/_21fb8c3c-fafc-4ae3-a783-4d49f6601b61.jpeg'
 import axiosInstance from "@/Components/utils/axiosInstance";
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
   const [isOpen1, setIsOpen1] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [currentPostId, setCurrentPostId] = useState<string | null>(null);
-  const [commentuser, setCommentuser] = React.useState<Post[]>([]);
+  const [comment, setComment] = React.useState<any[]>([]);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -213,7 +213,27 @@ const Home: React.FC = () => {
       console.error("Logout failed:", error);
     }
   }
+
+
+  const getComments = async (postId: string) => {
+    try {
+      const response = await getCommentApi(postId);
+      setComment(response.data.response)
+      return response.data; 
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      throw error; // Re-throwing the error to handle it in the calling function
+    }
+  };
   
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }); // Example: "March 3, 2025"
+  };
   
   return (
     <div className="min-h-screen bg-gray-100">
@@ -429,7 +449,17 @@ const Home: React.FC = () => {
                     }}
                   >
                     <MessageCircle size={20} />
-                    <span>{post?.comments?.length} Comments</span>
+                    <span>Comments</span>
+                  </button>
+                  <button
+                    className="flex items-center space-x-2 text-gray-600 hover:text-blue-500"
+                    onClick={() => {
+                      setCurrentPostId(post._id);
+                      getComments(post?._id)
+                    }}
+                  >
+                    <MessageCircle size={20} />
+                    <span>  All Comments</span>
                   </button>
                 </div>
                 {isOpen1 && currentPostId === post._id && (
@@ -489,23 +519,9 @@ const Home: React.FC = () => {
 
     {/* Comments Section */}
     <div
-  className={`${
-    post?.comments?.length > 3 ? "max-h-48 overflow-y-auto" : ""
-  }`}
+  
 >
-  {post?.comments?.map((comment: any, index: any) => (
-    <div key={index} className="flex items-center space-x-2">
-      <img
-        src={profilePic || user?.profilePic || "https://via.placeholder.com/150"}
-        alt="User Profile"
-        className="w-6 h-6 rounded-full"
-      />
-      <div>
-        <div className="font-semibold">{comment?.userId?.username}</div>
-        <div className="text-sm text-gray-600">{comment?.text}</div>
-      </div>
-    </div>
-  ))}
+  
 </div>
   </div>
 ))}
@@ -513,13 +529,40 @@ const Home: React.FC = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div className="w-1/4 bg-white p-4 rounded-lg shadow-md">
-          <div className="text-lg font-semibold mb-4">News</div>
-          <div className="space-y-2">
-            <div className="text-sm">Top news for today...</div>
-            <div className="text-sm">New features in React 18...</div>
-          </div>
-        </div>
+        <div className="fixed right-5 top-20 w-1/4 h-[500px] bg-white p-4 rounded-lg shadow-lg border border-gray-200">
+      <div className="text-xl font-semibold mb-4">Comments</div>
+      <div className="h-full overflow-y-auto space-y-3">
+        {comment.length === 0 ? (
+          <div className="text-gray-500 text-sm italic">No comments yet</div>
+        ) : (
+          <div className="fixed right-5 top-20 w-1/4 h-[500px] bg-white p-4 rounded-lg shadow-lg border border-gray-200">
+      <div className="text-xl font-semibold mb-4">Comment</div>
+      <div className="h-full overflow-y-auto space-y-4">
+        {comment?.length === 0 ? (
+          <div className="text-gray-500 text-sm italic">No comments yet</div>
+        ) : (
+          comment?.map((comment:any) => (
+            <div key={comment?._id} className="flex items-start gap-3 p-2 bg-gray-50 rounded-lg shadow-sm">
+              <img
+                src={comment?.userId?.profilePic}
+                alt={comment?.userId?.username}
+                className="w-10 h-10 rounded-full border border-gray-300"
+              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-gray-800">{comment?.userId?.username}</span>
+                  <span className="text-xs text-gray-500">{formatDate(comment?.createdAt)}</span>
+                </div>
+                <p className="text-sm text-gray-700">{comment?.text}</p>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+        )}
+      </div>
+    </div>
       </div>
       <ToastContainer />
     </div>

@@ -9,4 +9,5 @@ export interface IUserController {
   getPost(httpRequest:Request):Promise<ControllerResponse>
   addLike(httpRequest:Request):Promise<ControllerResponse>
   addComment(httpRequest:Request):Promise<ControllerResponse>
+  getComments(httpRequest:Request):Promise<ControllerResponse>
 }

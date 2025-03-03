@@ -1,4 +1,4 @@
-import { AddUserInput, AddUserOuput, GetUserOutput ,GetuserProfileOutput,SuccessResponse,PostDatas} from "./userRepository.types";
+import { AddUserInput, AddUserOuput, GetUserOutput ,GetuserProfileOutput,SuccessResponse,PostDatas, CommentDatas} from "./userRepository.types";
 
 export interface IUserRepository {
   addUser(userData: AddUserInput): Promise<AddUserOuput>;
@@ -9,4 +9,6 @@ export interface IUserRepository {
   getPost():Promise<PostDatas>
   addLike(userId:string,postId:string):Promise<SuccessResponse>
   addComment(userId:string,data:any):Promise<SuccessResponse>
+   getComments(userId:string,postId:any):Promise<CommentDatas>
+  
 }

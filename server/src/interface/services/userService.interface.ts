@@ -1,4 +1,4 @@
-import { UserSignupInput, UserSignupOutput,UserProfileOutput,SuccessResponse,PostDatas } from "./userService.types";
+import { UserSignupInput, UserSignupOutput,UserProfileOutput,SuccessResponse,PostDatas, CommentDatas } from "./userService.types";
 
 export interface IUserService {
   userSignup(userData: UserSignupInput): Promise<UserSignupOutput>;
@@ -9,4 +9,5 @@ export interface IUserService {
    getPost():Promise<PostDatas>
    addLike(userId:string,postId:string):Promise<SuccessResponse>
    addComment(userId:string,data:any):Promise<SuccessResponse>
+   getComments(userId:string,postId:any):Promise<CommentDatas>
 }

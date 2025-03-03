@@ -1,6 +1,7 @@
 import { IUserRepository } from "../interface/repositories/userRepository.interface";
 import { IUserService } from "../interface/services/userService.interface";
 import {
+  CommentDatas,
   PostDatas,
   SuccessResponse,
   UserProfileOutput,
@@ -162,5 +163,17 @@ addComment=async(userId: string, data: any): Promise<any>=> {
   }
 }
 
+getComments=async(userId: string, postId: any): Promise<CommentDatas>=> {
+  try {
+    const response = await this.userRepository.getComments(
+      userId,
+      postId
+    );
+    return response;
+  } catch (error: any) {
+    console.log("Error in addPost", error.message);
+    throw new Error(error.message);
+  }
+}
   
 }

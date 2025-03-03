@@ -2,11 +2,13 @@ import { IUserRepository } from "../interface/repositories/userRepository.interf
 import {
   AddUserInput,
   AddUserOuput,
+  CommentDatas,
   GetUserOutput,
   GetuserProfileOutput,
   PostDatas,
   SuccessResponse,
 } from "../interface/repositories/userRepository.types";
+import Comment from "../models/Comments";
 import Post from "../models/Post";
 import User from "../models/User";
 import { ObjectId } from "mongodb";
@@ -191,37 +193,47 @@ addComment=async(userId: string, data: any): Promise<any>=> {
       if (!data.commentText) {
         throw new Error("Comment text cannot be empty.");
       }
-      const userIdObject = new mongoose.Types.ObjectId(userId);
-      const newComment = {
-        userId:userIdObject,
+    
+      const newComment =await Comment.create ({
+        userId:userId,
         text: data.commentText,
+        postId:data.postId,
         createdAt: new Date(),
-      };
+      });
   
       
-      const updatedPost = await Post.findByIdAndUpdate(
-        data.postId,
-        { $push: { comments: newComment } },
-        { new: true }
-      ).populate({
-        path: "comments.userId", 
-        select: "username profilePic",
-      });
+      await newComment.save()
 
-     const user=await User.findOne({_id:userId})
-     const mergedPost = { ...updatedPost, ...user };
-      if (!mergedPost) {
-        throw new Error("Post not found.");
-      }
-      console.log(mergedPost)
-      return mergedPost;
+     
+      return newComment
     } catch (error: any) {
       console.error("Error in addComment:", error);
       throw new Error(error.message);
     }
   };
+
+  getComments=async(userId: string, postId: any): Promise<CommentDatas> =>{
+    try {
+      if (!userId) {
+        throw new Error("User ID is required.");
+      }
+      if (!postId) {
+        throw new Error("Post ID is required.");
+      }
+      console.log(postId)
+      const commentDatas= await Comment.find({postId:postId.postId}).populate('userId')
+    
+      
+      console.log(commentDatas)
+     
+      return commentDatas
+    } catch (error: any) {
+      console.error("Error in getComment:", error);
+      throw new Error(error.message);
+    }
+ 
   
   }
 
-
+}
 

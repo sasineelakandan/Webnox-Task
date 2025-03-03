@@ -56,3 +56,4 @@ export type SuccessResponse ={
   }
 
   export type PostDatas= Array<{ [key: string]: any }>
+  export type CommentDatas= Array<{ [key: string]: any }>

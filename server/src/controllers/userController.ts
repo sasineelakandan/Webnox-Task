@@ -300,4 +300,38 @@ export class UserController implements IUserController {
       };
     }
   }
+  getComments=async(httpRequest:CustomRequest): Promise<ControllerResponse>=> {
+    try {
+      
+     
+
+      
+  
+      // Extract user ID
+      const userId = httpRequest?.user?.id;
+      if (!userId) {
+        throw new Error("User ID is missing.");
+      }
+      const data= httpRequest?.query;
+     
+     
+       const response=await this.userService.getComments(userId,data)
+      return {
+        headers: { "Content-Type": "application/json" },
+        statusCode: 201, // Created
+        body: {
+          message: "Post and picture updated successfully.",
+          response,
+        },
+      };
+    } catch (error: any) {
+      console.error("Error in addPost:", error.message);
+  
+      return {
+        headers: { "Content-Type": "application/json" },
+        statusCode: 500, // Internal Server Error
+        body: { error: error.message || "An unknown error occurred." },
+      };
+    }
+  }
 }

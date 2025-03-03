@@ -125,8 +125,8 @@ export const loginApi = async (data: Record<string, any>) => {
 
     try {
       
-      const response=await axiosInstance.put(
-          `${process.env.NEXT_PUBLIC_USER_BACKEND_URL}/post`,
+      const response=await axiosInstance.post(
+          `${process.env.NEXT_PUBLIC_USER_BACKEND_URL}/comments`,
           data,
           { withCredentials: true }
         );
@@ -135,4 +135,24 @@ export const loginApi = async (data: Record<string, any>) => {
     console.log(error,"from api")
     throw error; 
   }
+
+
+  };
+
+  export const getCommentApi = async (postId:any) => {
+
+    try {
+      
+      const response=await axiosInstance.get(
+          `${process.env.NEXT_PUBLIC_USER_BACKEND_URL}/comments?postId=${postId}`,
+          
+          { withCredentials: true }
+        );
+    return response;
+  } catch (error: any) {
+    console.log(error,"from api")
+    throw error; 
+  }
+
+  
   };

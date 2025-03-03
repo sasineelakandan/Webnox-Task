@@ -34,7 +34,13 @@ router
   .get(authMiddleware,expressCallback(controller.getPost))
   .post(authMiddleware,upload.single('file'), expressCallback(controller.addPost))
   .patch(authMiddleware,expressCallback(controller.addLike))
-  .put(authMiddleware,expressCallback(controller.addComment))
+  
+
+   
+  router
+  .route('/comments')
+  .get(authMiddleware,expressCallback(controller.getComments))
+  .post(authMiddleware,expressCallback(controller.addComment))
 
   router.route("/logout").post((req:Request, res:Response) => {
     
